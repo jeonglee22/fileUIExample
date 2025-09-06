@@ -53,7 +53,7 @@ public class UiInvenSlotList : MonoBehaviour
 
     public int maxCount = 30;
 
-    private List<SaveItemData> testItemList = new List<SaveItemData>();
+    private List<SaveItemData> tempItemList = new List<SaveItemData>();
 
     private SortingOptions sorting = SortingOptions.NameAccending;
     private FilteringOptions filtering = FilteringOptions.None;
@@ -64,7 +64,7 @@ public class UiInvenSlotList : MonoBehaviour
         set
         {
             sorting = value;
-            UpdateSlots(testItemList);
+            UpdateSlots(tempItemList);
         }
     }
     public FilteringOptions Filtering 
@@ -73,7 +73,7 @@ public class UiInvenSlotList : MonoBehaviour
         set
         {
             filtering = value;
-            UpdateSlots(testItemList);
+            UpdateSlots(tempItemList);
         }
     }
 
@@ -84,21 +84,28 @@ public class UiInvenSlotList : MonoBehaviour
 
     public void Save()
     {
-        var jsonText = JsonConvert.SerializeObject(testItemList);
-        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
-        File.WriteAllText(filePath, jsonText);
+		//var jsonText = JsonConvert.SerializeObject(testItemList);
+		//var filePath = Path.Combine(Application.persistentDataPath, "test.json");
+		//File.WriteAllText(filePath, jsonText);
+		SaveLoadManager.Data.itemDatas = tempItemList;
+		SaveLoadManager.Save();
     }
 
     public void Load()
     {
-        var filePath = Path.Combine(Application.persistentDataPath, "test.json");
-        if (!File.Exists(filePath))
+        //var filePath = Path.Combine(Application.persistentDataPath, "test.json");
+        //if (!File.Exists(filePath))
+        //{
+        //    return;
+        //}
+        //var jsonText = File.ReadAllText(filePath);
+        //testItemList = JsonConvert.DeserializeObject<List<SaveItemData>>(jsonText);
+        if(SaveLoadManager.Load())
         {
-            return;
+            var saveData = SaveLoadManager.Data;
+            tempItemList = saveData.itemDatas;
         }
-        var jsonText = File.ReadAllText(filePath);
-        testItemList = JsonConvert.DeserializeObject<List<SaveItemData>>(jsonText);
-        UpdateSlots(testItemList);
+        UpdateSlots(tempItemList);
     }
 
     private void Awake()
@@ -163,8 +170,8 @@ public class UiInvenSlotList : MonoBehaviour
         var itemInstance = new SaveItemData();
         itemInstance.itemData = DataTableManger.ItemTable.GetRandom();
 
-        testItemList.Add(itemInstance);
-        UpdateSlots(testItemList);
+        tempItemList.Add(itemInstance);
+        UpdateSlots(tempItemList);
     }
 
     public void RemoveItem()
@@ -172,8 +179,8 @@ public class UiInvenSlotList : MonoBehaviour
         if (selectedSlotIndex == -1)
             return;
 
-        testItemList.Remove(slotList[selectedSlotIndex].ItemData);
-        UpdateSlots(testItemList);
+        tempItemList.Remove(slotList[selectedSlotIndex].ItemData);
+        UpdateSlots(tempItemList);
     }
 
 }

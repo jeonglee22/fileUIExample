@@ -2,6 +2,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System;
 using Newtonsoft.Json.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class ItemDataConverter : JsonConverter<ItemData>
 {
@@ -31,14 +32,70 @@ public class Vector3Converter : JsonConverter<Vector3>
 
     public override void WriteJson(JsonWriter writer, Vector3 value, JsonSerializer serializer)
     {
-        writer.WriteStartObject();
-        writer.WritePropertyName("X");
+		writer.WriteStartObject();
+		writer.WritePropertyName("X");
         writer.WriteValue(value.x);
         writer.WritePropertyName("Y");
         writer.WriteValue(value.y);
         writer.WritePropertyName("Z");
         writer.WriteValue(value.z);
-        writer.WriteEndObject();
-    }
+		writer.WriteEndObject();
+	}
 }
 
+public class QuaternionConverter : JsonConverter<Quaternion>
+{
+	public override Quaternion ReadJson(JsonReader reader, Type objectType, Quaternion existingValue, bool hasExistingValue, JsonSerializer serializer)
+	{
+		Quaternion q = Quaternion.identity;
+		JObject jObj = JObject.Load(reader);
+		q.x = (float)jObj["X"];
+		q.y = (float)jObj["Y"];
+		q.z = (float)jObj["Z"];
+        q.w = (float)jObj["W"];
+		return q;
+	}
+
+	public override void WriteJson(JsonWriter writer, Quaternion value, JsonSerializer serializer)
+	{
+		writer.WriteStartObject();
+		writer.WritePropertyName("X");
+		writer.WriteValue(value.x);
+		writer.WritePropertyName("Y");
+		writer.WriteValue(value.y);
+		writer.WritePropertyName("Z");
+		writer.WriteValue(value.z);
+		writer.WritePropertyName("W");
+		writer.WriteValue(value.w);
+		writer.WriteEndObject();
+	}
+}
+
+public class ColorConverter : JsonConverter<Color>
+{
+	public override Color ReadJson(JsonReader reader, Type objectType, Color existingValue, bool hasExistingValue, JsonSerializer serializer)
+	{
+		Color c = new Color();
+		JObject jObj = JObject.Load(reader);
+		c.r = (int)jObj["R"];
+		c.g = (int)jObj["G"];
+		c.b = (int)jObj["B"];
+		c.a = (int)jObj["A"];
+
+		return c;
+	}
+
+	public override void WriteJson(JsonWriter writer, Color value, JsonSerializer serializer)
+	{
+		writer.WriteStartObject();
+		writer.WritePropertyName("R");
+		writer.WriteValue(value.r);
+		writer.WritePropertyName("G");
+		writer.WriteValue(value.g);
+		writer.WritePropertyName("B");
+		writer.WriteValue(value.b);
+		writer.WritePropertyName("A");
+		writer.WriteValue(value.a);
+		writer.WriteEndObject();
+	}
+}
