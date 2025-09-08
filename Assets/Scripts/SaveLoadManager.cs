@@ -2,13 +2,18 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using UnityEngine;
-using SaveDataVC = SaveDataV3;
+using SaveDataVC = SaveDataV4;
 
 public class SaveLoadManager
 {
-    public static int SaveDataVersion { get; } = 3;
+    public static int SaveDataVersion { get; } = 4;
 
-    public static SaveDataVC Data {  get; set; } = new SaveDataVC();
+    static SaveLoadManager()
+    {
+        Load();
+    }
+
+    public static SaveDataVC Data { get; set; } = new SaveDataVC();
 
     public static readonly string[] SaveFileName =
     {

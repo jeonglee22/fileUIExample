@@ -92,7 +92,6 @@ public class JsonTest2 : MonoBehaviour
             obj.color = color;
             objects.Add(obj);
 		}
-
         count += spawnCount;
     }
 
